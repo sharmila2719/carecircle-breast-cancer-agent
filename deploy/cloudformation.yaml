@@ -1,0 +1,80 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: CareCircle - Breast Cancer Screening & Care Coordination Agent Infrastructure
+
+Parameters:
+  Environment:
+    Type: String
+    Default: production
+    AllowedValues:
+      - development
+      - staging
+      - production
+  
+  BedrockModelId:
+    Type: String
+    Default: us.anthropic.claude-sonnet-4-20250514
+
+Resources:
+  # IAM Role for the application
+  CareCircleRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub 'carecircle-role-${Environment}'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+                - ecs-tasks.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonBedrockFullAccess
+      Policies:
+        - PolicyName: BedrockInvoke
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - bedrock:InvokeModel
+                  - bedrock:InvokeModelWithResponseStream
+                Resource: '*'
+
+  # VPC for the application
+  CareCircleVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      Tags:
+        - Key: Name
+          Value: !Sub 'carecircle-vpc-${Environment}'
+
+  # Public Subnet
+  PublicSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref CareCircleVPC
+      CidrBlock: 10.0.1.0/24
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: !Sub 'carecircle-public-${Environment}'
+
+  # ECS Cluster
+  CareCircleCluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: !Sub 'carecircle-cluster-${Environment}'
+
+Outputs:
+  ClusterArn:
+    Description: ECS Cluster ARN
+    Value: !GetAtt CareCircleCluster.Arn
+  
+  RoleArn:
+    Description: IAM Role ARN
+    Value: !GetAtt CareCircleRole.Arn

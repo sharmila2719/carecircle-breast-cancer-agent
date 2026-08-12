@@ -149,7 +149,20 @@ python main.py --mode api
 streamlit run src/ui/streamlit_app.py
 ```
 
-### Docker Deployment
+### ☁️ Serverless Deployment (Streamlit Community Cloud)
+
+The app is deployed serverlessly on Streamlit Community Cloud:
+
+🔗 **Live Demo**: [https://carecircle-breast-cancer-agent.streamlit.app](https://carecircle-breast-cancer-agent.streamlit.app)
+
+To deploy your own instance:
+1. Go to [share.streamlit.io](https://share.streamlit.io)
+2. Sign in with GitHub
+3. Click "New app" → Select this repository
+4. Set main file to `streamlit_app.py`
+5. Click Deploy
+
+### Docker Deployment (Local/Self-hosted)
 
 ```bash
 # Build and run with Docker Compose

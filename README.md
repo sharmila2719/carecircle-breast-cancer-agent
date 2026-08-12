@@ -165,6 +165,10 @@ streamlit run src/ui/streamlit_app.py
 
 🔗 **Live Demo**: [https://carecircle-breast-cancer-agent.streamlit.app](https://carecircle-breast-cancer-agent.streamlit.app)
 
+🔗 **Live API (Serverless)**: [https://vnja2r5dx6.execute-api.us-east-1.amazonaws.com/](https://vnja2r5dx6.execute-api.us-east-1.amazonaws.com/)
+
+🔗 **API Docs**: [https://vnja2r5dx6.execute-api.us-east-1.amazonaws.com/docs](https://vnja2r5dx6.execute-api.us-east-1.amazonaws.com/docs)
+
 ### ⚡ AWS Lambda Serverless Deployment
 
 Deploy the API as a fully serverless function on AWS Lambda + API Gateway:

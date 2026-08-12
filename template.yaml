@@ -1,0 +1,88 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  CareCircle - Breast Cancer Screening & Care Coordination Agent
+  Serverless deployment on AWS Lambda + API Gateway
+
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 512
+    Runtime: python3.11
+    Environment:
+      Variables:
+        AWS_REGION_NAME: !Ref AWS::Region
+        BEDROCK_MODEL_ID: us.anthropic.claude-sonnet-4-20250514
+
+Resources:
+  CareCircleFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: carecircle-api
+      Description: CareCircle Breast Cancer Screening Agent API
+      Handler: lambda_app.handler.handler
+      CodeUri: .
+      Architectures:
+        - x86_64
+      Policies:
+        - Statement:
+            - Effect: Allow
+              Action:
+                - bedrock:InvokeModel
+                - bedrock:InvokeModelWithResponseStream
+              Resource: "*"
+      Events:
+        RootPath:
+          Type: HttpApi
+          Properties:
+            Path: /
+            Method: GET
+            ApiId: !Ref CareCircleApi
+        HealthCheck:
+          Type: HttpApi
+          Properties:
+            Path: /health
+            Method: GET
+            ApiId: !Ref CareCircleApi
+        ApiProxy:
+          Type: HttpApi
+          Properties:
+            Path: /api/{proxy+}
+            Method: ANY
+            ApiId: !Ref CareCircleApi
+        DocsPath:
+          Type: HttpApi
+          Properties:
+            Path: /docs
+            Method: GET
+            ApiId: !Ref CareCircleApi
+        OpenApiPath:
+          Type: HttpApi
+          Properties:
+            Path: /openapi.json
+            Method: GET
+            ApiId: !Ref CareCircleApi
+
+  CareCircleApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      StageName: prod
+      CorsConfiguration:
+        AllowOrigins:
+          - "*"
+        AllowMethods:
+          - GET
+          - POST
+          - PUT
+          - OPTIONS
+        AllowHeaders:
+          - "*"
+
+Outputs:
+  CareCircleApiUrl:
+    Description: "CareCircle API Gateway URL"
+    Value: !Sub "https://${CareCircleApi}.execute-api.${AWS::Region}.amazonaws.com/prod/"
+  
+  CareCircleFunctionArn:
+    Description: "CareCircle Lambda Function ARN"
+    Value: !GetAtt CareCircleFunction.Arn

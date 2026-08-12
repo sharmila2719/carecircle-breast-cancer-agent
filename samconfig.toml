@@ -1,0 +1,10 @@
+# SAM CLI Configuration for CareCircle
+# Run: sam build && sam deploy
+
+[default.deploy.parameters]
+stack_name = "carecircle-serverless"
+resolve_s3 = true
+s3_prefix = "carecircle"
+region = "us-east-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"

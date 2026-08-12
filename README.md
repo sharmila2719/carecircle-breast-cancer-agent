@@ -165,6 +165,24 @@ streamlit run src/ui/streamlit_app.py
 
 🔗 **Live Demo**: [https://carecircle-breast-cancer-agent.streamlit.app](https://carecircle-breast-cancer-agent.streamlit.app)
 
+### ⚡ AWS Lambda Serverless Deployment
+
+Deploy the API as a fully serverless function on AWS Lambda + API Gateway:
+
+```bash
+# Install SAM CLI
+pip install aws-sam-cli
+
+# Build and deploy
+sam build
+sam deploy --guided
+```
+
+This gives you a public API endpoint like:
+`https://abc123.execute-api.us-east-1.amazonaws.com/prod/`
+
+See [Lambda Deployment Guide](docs/LAMBDA_DEPLOYMENT.md) for full instructions.
+
 ### Docker Deployment (Local/Self-hosted)
 
 ```bash

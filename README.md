@@ -149,18 +149,21 @@ python main.py --mode api
 streamlit run src/ui/streamlit_app.py
 ```
 
-### ☁️ Serverless Deployment (Streamlit Community Cloud)
+### ☁️ One-Click Serverless Deployment
 
-The app is deployed serverlessly on Streamlit Community Cloud:
+#### Deploy to Streamlit Cloud (Recommended - Free):
+
+[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/deploy?repository=sharmila2719/carecircle-breast-cancer-agent&branch=master&mainModule=streamlit_app.py)
+
+#### Deploy to Render (Free):
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/sharmila2719/carecircle-breast-cancer-agent)
+
+#### Deploy to Hugging Face Spaces:
+
+[![Open in Spaces](https://huggingface.co/datasets/huggingface/badges/resolve/main/open-in-hf-spaces-sm.svg)](https://huggingface.co/spaces/sharmila2719/carecircle?duplicate=true)
 
 🔗 **Live Demo**: [https://carecircle-breast-cancer-agent.streamlit.app](https://carecircle-breast-cancer-agent.streamlit.app)
-
-To deploy your own instance:
-1. Go to [share.streamlit.io](https://share.streamlit.io)
-2. Sign in with GitHub
-3. Click "New app" → Select this repository
-4. Set main file to `streamlit_app.py`
-5. Click Deploy
 
 ### Docker Deployment (Local/Self-hosted)
 

@@ -110,6 +110,8 @@ def main():
     st.sidebar.markdown("---")
     st.sidebar.markdown("**CareCircle v1.0**")
     st.sidebar.markdown("☁️ Powered by AWS Bedrock")
+    st.sidebar.markdown("💡 Invented by **Sharmila Begum**")
+    st.sidebar.markdown("*Agentic AI Specialist | Ex Edgematican*")
     st.sidebar.markdown("⚠️ Not a substitute for medical advice")
     st.sidebar.markdown("[GitHub Repo](https://github.com/sharmila2719/carecircle-breast-cancer-agent)")
 

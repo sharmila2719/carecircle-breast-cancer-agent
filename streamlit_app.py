@@ -199,6 +199,10 @@ def show_dashboard():
     for activity in activities:
         st.markdown(f"**{activity['time']}** — {activity['event']}")
 
+    # Page footer
+    st.markdown("---")
+    st.markdown("☁️ Powered by **Amazon Bedrock** | 💡 Invented by **Sharmila Begum** — Agentic AI Specialist | Ex Edgematican")
+
 
 def show_risk_assessment():
     """Show the risk assessment page."""
@@ -330,6 +334,10 @@ def show_risk_assessment():
 
         st.success("✅ Risk assessment complete! Go to **📋 Care Plan** to generate a personalized care plan.")
 
+    # Page footer
+    st.markdown("---")
+    st.markdown("☁️ Powered by **Amazon Bedrock** | 💡 Invented by **Sharmila Begum** — Agentic AI Specialist | Ex Edgematican")
+
 
 def show_screening_scheduler():
     """Show the screening scheduler page."""
@@ -413,6 +421,10 @@ def show_screening_scheduler():
                     st.markdown("---")
             else:
                 st.info(result["message"])
+
+    # Page footer
+    st.markdown("---")
+    st.markdown("☁️ Powered by **Amazon Bedrock** | 💡 Invented by **Sharmila Begum** — Agentic AI Specialist | Ex Edgematican")
 
 
 def show_care_plan():
@@ -499,6 +511,10 @@ def show_care_plan():
         st.warning("⚠️ Please complete a **Risk Assessment** first to generate a personalized care plan.")
         st.markdown("Go to **📊 Risk Assessment** in the sidebar to get started.")
 
+    # Page footer
+    st.markdown("---")
+    st.markdown("☁️ Powered by **Amazon Bedrock** | 💡 Invented by **Sharmila Begum** — Agentic AI Specialist | Ex Edgematican")
+
 
 def show_education_center():
     """Show the education center page."""
@@ -559,6 +575,10 @@ def show_education_center():
                 with st.expander("📑 References"):
                     for ref in result["references"]:
                         st.caption(f"• {ref}")
+
+    # Page footer
+    st.markdown("---")
+    st.markdown("☁️ Powered by **Amazon Bedrock** | 💡 Invented by **Sharmila Begum** — Agentic AI Specialist | Ex Edgematican")
 
 
 def show_chat():
@@ -630,6 +650,10 @@ def show_chat():
                     response = _generate_demo_response(prompt)
                     st.markdown(response)
                     st.session_state.messages.append({"role": "assistant", "content": response})
+
+    # Page footer
+    st.markdown("---")
+    st.markdown("☁️ Powered by **Amazon Bedrock** | 💡 Invented by **Sharmila Begum** — Agentic AI Specialist | Ex Edgematican")
 
 
 def _generate_demo_response(prompt: str) -> str:

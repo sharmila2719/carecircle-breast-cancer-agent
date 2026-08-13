@@ -560,16 +560,11 @@ def show_education_center():
 
 
 def show_chat():
-    """Show the agent chat interface."""
+    """Show the agent chat interface with real AI responses."""
     st.header("💬 Chat with CareCircle Agent")
     st.markdown(
-        "Ask questions about breast cancer screening, risk factors, or get help managing your care."
-    )
-
-    st.info(
-        "💡 **Note**: Full AI responses require AWS Bedrock credentials. "
-        "The demo below shows the conversational interface. "
-        "Try the other pages for fully functional tools!"
+        "Ask questions about breast cancer screening, risk factors, or get help managing your care. "
+        "**Powered by AWS Bedrock (Claude) with real-time AI responses.**"
     )
 
     # Initialize chat history
@@ -580,15 +575,26 @@ def show_chat():
                 "content": (
                     "Hello! I'm **CareCircle**, your breast cancer screening and care coordination assistant. 🩺\n\n"
                     "I can help you with:\n"
-                    "- 📊 **Risk assessments** — understand your personal risk\n"
-                    "- 📅 **Screening scheduling** — book and track appointments\n"
-                    "- 📋 **Care plans** — personalized screening and lifestyle plans\n"
-                    "- 📚 **Education** — learn about breast health topics\n"
-                    "- 🔔 **Reminders** — stay on track with screenings\n\n"
-                    "How can I help you today?"
+                    "- 📊 **Risk assessments** — tell me your age, family history, and I'll calculate your risk\n"
+                    "- 📅 **Screening scheduling** — I can schedule mammograms, MRIs, and more\n"
+                    "- 📋 **Care plans** — personalized screening and lifestyle recommendations\n"
+                    "- 📚 **Education** — ask me about any breast health topic\n"
+                    "- 🔔 **Reminders** — I'll help you stay on track\n\n"
+                    "**Try asking:** *'I'm 52 with a family history of breast cancer. What's my risk?'*"
                 ),
             }
         ]
+
+    # Initialize agent (once per session)
+    if "care_agent" not in st.session_state:
+        try:
+            from src.agent.care_agent import create_agent
+            st.session_state.care_agent = create_agent()
+            st.session_state.agent_ready = True
+        except Exception as e:
+            st.session_state.care_agent = None
+            st.session_state.agent_ready = False
+            st.warning(f"⚠️ AI agent could not connect to AWS Bedrock. Using guided responses. ({type(e).__name__})")
 
     # Display chat history
     for message in st.session_state.messages:
@@ -601,11 +607,21 @@ def show_chat():
         with st.chat_message("user"):
             st.markdown(prompt)
 
-        # Generate a helpful response based on keywords (demo mode without AWS)
         with st.chat_message("assistant"):
-            response = _generate_demo_response(prompt)
-            st.markdown(response)
-            st.session_state.messages.append({"role": "assistant", "content": response})
+            with st.spinner("🩺 CareCircle is analyzing your question..."):
+                if st.session_state.get("agent_ready") and st.session_state.care_agent:
+                    try:
+                        response = st.session_state.care_agent.chat(prompt)
+                        st.markdown(response)
+                        st.session_state.messages.append({"role": "assistant", "content": response})
+                    except Exception as e:
+                        response = _generate_demo_response(prompt)
+                        st.markdown(response)
+                        st.session_state.messages.append({"role": "assistant", "content": response})
+                else:
+                    response = _generate_demo_response(prompt)
+                    st.markdown(response)
+                    st.session_state.messages.append({"role": "assistant", "content": response})
 
 
 def _generate_demo_response(prompt: str) -> str:

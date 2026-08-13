@@ -588,6 +588,12 @@ def show_chat():
     # Initialize agent (once per session)
     if "care_agent" not in st.session_state:
         try:
+            # Set AWS credentials from Streamlit secrets if available
+            if hasattr(st, "secrets") and "aws" in st.secrets:
+                os.environ["AWS_ACCESS_KEY_ID"] = st.secrets["aws"]["AWS_ACCESS_KEY_ID"]
+                os.environ["AWS_SECRET_ACCESS_KEY"] = st.secrets["aws"]["AWS_SECRET_ACCESS_KEY"]
+                os.environ["AWS_DEFAULT_REGION"] = st.secrets["aws"].get("AWS_DEFAULT_REGION", "us-east-1")
+
             from src.agent.care_agent import create_agent
             st.session_state.care_agent = create_agent()
             st.session_state.agent_ready = True
@@ -625,19 +631,68 @@ def show_chat():
 
 
 def _generate_demo_response(prompt: str) -> str:
-    """Generate a demo response based on keywords (when AWS credentials are not configured)."""
+    """Generate intelligent responses using local tools when Bedrock is unavailable."""
     prompt_lower = prompt.lower()
 
-    if any(word in prompt_lower for word in ["risk", "assess", "score", "calculate"]):
+    # Try to use local tools for real answers
+    if any(word in prompt_lower for word in ["symptom", "signs", "lump", "change"]):
+        return (
+            "## Common Signs & Symptoms of Breast Cancer 🩺\n\n"
+            "While most breast changes are NOT cancer, see your doctor if you notice:\n\n"
+            "**Physical Changes:**\n"
+            "- A new lump or mass (hard, painless, irregular edges — but can also be soft/round)\n"
+            "- Swelling of all or part of a breast\n"
+            "- Skin dimpling (like an orange peel)\n"
+            "- Breast or nipple pain\n"
+            "- Nipple retraction (turning inward)\n"
+            "- Nipple discharge (other than breast milk)\n"
+            "- Red, dry, flaking skin on the breast or nipple\n"
+            "- Swollen lymph nodes under the arm or near the collarbone\n\n"
+            "**Important Notes:**\n"
+            "- 🟢 80% of breast lumps are NOT cancerous\n"
+            "- 🟡 Early breast cancer often has NO symptoms — that's why screening matters\n"
+            "- 🔴 Any new change should be evaluated by a healthcare provider\n\n"
+            "**Recommended:** Perform monthly breast self-awareness and get regular mammograms "
+            "based on your age and risk level.\n\n"
+            "Would you like me to help with a **risk assessment** or **schedule a screening**?"
+        )
+    elif any(word in prompt_lower for word in ["risk", "assess", "score", "calculate", "my risk"]):
+        # Actually run the risk assessment if they mention their details
+        if any(word in prompt_lower for word in ["50", "55", "60", "45", "40"]):
+            from src.tools.risk_assessment import calculate_risk_score
+            # Try to extract age
+            age = 50
+            for word in prompt_lower.split():
+                if word.isdigit() and 18 <= int(word) <= 120:
+                    age = int(word)
+                    break
+            family = any(w in prompt_lower for w in ["family", "mother", "sister", "daughter"])
+            dense = "dense" in prompt_lower
+            result = calculate_risk_score(
+                age=age,
+                family_history=family,
+                breast_density="dense" if dense else "scattered",
+            )
+            return (
+                f"## 📊 Your Risk Assessment Result\n\n"
+                f"Based on the information you provided:\n\n"
+                f"- **Risk Score:** {result['risk_score']} / 100\n"
+                f"- **Category:** {result['risk_category'].replace('_', ' ').title()}\n"
+                f"- **Recommendation:** {result['recommendation']}\n\n"
+                f"**Risk Factors Identified:**\n" +
+                "\n".join([f"- {f['factor']}: +{f['contribution']} pts" for f in result['risk_factors']]) +
+                "\n\nFor a more detailed assessment, try the **📊 Risk Assessment** page in the sidebar "
+                "where you can enter all your health details."
+            )
         return (
             "I can help assess your breast cancer risk! 📊\n\n"
-            "Please use the **📊 Risk Assessment** page in the sidebar to enter your health details. "
-            "The tool evaluates 12+ factors including:\n"
-            "- Age and family history\n"
+            "Tell me your **age** and any of these factors:\n"
+            "- Family history of breast cancer\n"
             "- Genetic markers (BRCA1/BRCA2)\n"
             "- Breast density\n"
-            "- Lifestyle factors\n\n"
-            "Would you like to navigate there now?"
+            "- Previous biopsies\n"
+            "- Lifestyle factors (smoking, alcohol)\n\n"
+            "Or use the **📊 Risk Assessment** page for a detailed form-based calculation."
         )
     elif any(word in prompt_lower for word in ["schedule", "appointment", "mammogram", "screening", "book"]):
         return (
@@ -646,54 +701,93 @@ def _generate_demo_response(prompt: str) -> str:
             "- Book mammograms, MRIs, ultrasounds, or clinical exams\n"
             "- Get preparation instructions for your appointment\n"
             "- View upcoming scheduled screenings\n\n"
-            "Regular screening is key to early detection — the 5-year survival rate for early-stage "
-            "breast cancer is **99%**!"
+            "**Quick tip:** The 5-year survival rate for early-stage breast cancer is **99%** — "
+            "regular screening catches it early!"
         )
     elif any(word in prompt_lower for word in ["care plan", "plan", "recommendation"]):
         return (
-            "I can generate a personalized care plan for you! 📋\n\n"
-            "First, complete a **📊 Risk Assessment**, then visit the **📋 Care Plan** page. "
+            "I can generate a personalized care plan! 📋\n\n"
+            "First, complete a **📊 Risk Assessment**, then visit the **📋 Care Plan** page.\n\n"
             "Your plan will include:\n"
-            "- Personalized screening schedule\n"
-            "- Lifestyle recommendations\n"
+            "- Personalized screening schedule (mammogram, MRI, etc.)\n"
+            "- Lifestyle recommendations (exercise, diet, alcohol)\n"
             "- Action items with due dates\n"
-            "- Support resources\n\n"
-            "Each plan is tailored to your individual risk profile."
+            "- Support resources and genetic counseling (if needed)\n\n"
+            "Each plan is tailored to YOUR specific risk profile."
         )
-    elif any(word in prompt_lower for word in ["education", "learn", "information", "what is", "how"]):
-        return (
-            "Great question! 📚\n\n"
-            "Visit the **📚 Education Center** for comprehensive information on:\n"
-            "- Breast self-examination techniques\n"
-            "- Understanding mammograms\n"
-            "- Risk factors and prevention\n"
-            "- Genetic testing\n"
-            "- Screening guidelines by age\n"
-            "- Myths vs. facts\n\n"
-            "Knowledge is power when it comes to breast health!"
-        )
+    elif any(word in prompt_lower for word in ["mammogram", "mri", "ultrasound", "biopsy"]):
+        from src.tools.patient_education import get_educational_content
+        result = get_educational_content(topic="mammogram_overview", detail_level="standard")
+        if result.get("success"):
+            points = "\n".join([f"- {p}" for p in result["key_points"]])
+            return f"## {result['topic']}\n\n{result['summary']}\n\n**Key Points:**\n{points}"
+        return "Visit the **📚 Education Center** for information about screening procedures."
+    elif any(word in prompt_lower for word in ["prevention", "prevent", "reduce", "lifestyle", "diet", "exercise"]):
+        from src.tools.patient_education import get_educational_content
+        result = get_educational_content(topic="lifestyle_prevention", detail_level="standard")
+        if result.get("success"):
+            points = "\n".join([f"- {p}" for p in result["key_points"]])
+            return f"## {result['topic']}\n\n{result['summary']}\n\n**Key Points:**\n{points}"
+        return "Visit the **📚 Education Center** for prevention information."
+    elif any(word in prompt_lower for word in ["genetic", "brca", "hereditary", "gene"]):
+        from src.tools.patient_education import get_educational_content
+        result = get_educational_content(topic="genetic_testing", detail_level="standard")
+        if result.get("success"):
+            points = "\n".join([f"- {p}" for p in result["key_points"]])
+            return f"## {result['topic']}\n\n{result['summary']}\n\n**Key Points:**\n{points}"
+        return "Visit the **📚 Education Center** for genetic testing information."
+    elif any(word in prompt_lower for word in ["dense", "density"]):
+        from src.tools.patient_education import get_educational_content
+        result = get_educational_content(topic="dense_breasts", detail_level="standard")
+        if result.get("success"):
+            points = "\n".join([f"- {p}" for p in result["key_points"]])
+            return f"## {result['topic']}\n\n{result['summary']}\n\n**Key Points:**\n{points}"
+        return "Visit the **📚 Education Center** for breast density information."
+    elif any(word in prompt_lower for word in ["guideline", "when", "often", "frequency", "age"]):
+        from src.tools.patient_education import get_educational_content
+        result = get_educational_content(topic="screening_guidelines", detail_level="standard")
+        if result.get("success"):
+            points = "\n".join([f"- {p}" for p in result["key_points"]])
+            return f"## {result['topic']}\n\n{result['summary']}\n\n**Key Points:**\n{points}"
+        return "Visit the **📚 Education Center** for screening guidelines."
     elif any(word in prompt_lower for word in ["hello", "hi", "hey", "help"]):
         return (
-            "Hello! 👋 I'm here to help with your breast health journey.\n\n"
-            "Here's what I recommend:\n"
-            "1. Start with a **📊 Risk Assessment** to understand your risk level\n"
-            "2. Get a **📋 Care Plan** tailored to your profile\n"
-            "3. **📅 Schedule** your recommended screenings\n"
-            "4. Visit the **📚 Education Center** to learn more\n\n"
-            "What would you like to start with?"
+            "Hello! 👋 I'm CareCircle, your breast health assistant.\n\n"
+            "Here's what I can help with:\n"
+            "1. **📊 Risk Assessment** — tell me your age and health details\n"
+            "2. **📅 Screening** — schedule mammograms and more\n"
+            "3. **📋 Care Plans** — personalized health plans\n"
+            "4. **📚 Education** — ask about any breast health topic\n\n"
+            "**Try asking:**\n"
+            "- *'What are the symptoms of breast cancer?'*\n"
+            "- *'I'm 50 with a family history, what's my risk?'*\n"
+            "- *'How often should I get a mammogram?'*\n"
+            "- *'Tell me about genetic testing'*"
         )
     else:
+        # Try to find a relevant education topic
+        from src.tools.patient_education import get_educational_content
+        # Try early detection as a general helpful response
+        result = get_educational_content(topic="early_detection", detail_level="standard")
+        if result.get("success"):
+            points = "\n".join([f"- {p}" for p in result["key_points"]])
+            return (
+                f"I'd be happy to help! Here's some important information:\n\n"
+                f"## {result['topic']}\n\n{result['summary']}\n\n**Key Points:**\n{points}\n\n"
+                f"**I can also help with:**\n"
+                f"- Risk assessment — *'What's my risk?'*\n"
+                f"- Symptoms — *'What are the symptoms?'*\n"
+                f"- Scheduling — *'Schedule a mammogram'*\n"
+                f"- Any breast health topic — just ask!"
+            )
         return (
-            "Thank you for your question! 🩺\n\n"
-            "I'm CareCircle, focused on breast cancer screening coordination. "
-            "I can help with:\n"
-            "- **Risk assessment** — type 'assess my risk'\n"
-            "- **Scheduling** — type 'schedule a mammogram'\n"
-            "- **Care plans** — type 'create a care plan'\n"
-            "- **Education** — type 'tell me about mammograms'\n\n"
-            "For the full AI-powered experience with natural language understanding, "
-            "AWS Bedrock credentials can be configured in the `.env` file.\n\n"
-            "Try the interactive tools in the sidebar for immediate results! ➡️"
+            "I'm CareCircle, focused on breast cancer screening coordination. 🩺\n\n"
+            "Try asking:\n"
+            "- *'What are the symptoms of breast cancer?'*\n"
+            "- *'Assess my risk - I'm 55 with family history'*\n"
+            "- *'How often should I get screened?'*\n"
+            "- *'Tell me about BRCA genetic testing'*\n"
+            "- *'What is breast density?'*"
         )
 
 

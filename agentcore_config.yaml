@@ -1,0 +1,55 @@
+# Amazon Bedrock AgentCore Configuration
+# CareCircle - Breast Cancer Screening & Care Coordination Agent
+
+agent:
+  name: carecircle-breast-cancer-agent
+  version: "1.0.0"
+  framework: strands-agents
+
+runtime:
+  type: serverless
+  memory_mb: 1024
+  timeout_seconds: 300
+
+memory:
+  enabled: true
+  type: session
+  retention_days: 365
+  namespace: "carecircle"
+
+identity:
+  enabled: true
+  auth_type: oauth2
+
+gateway:
+  enabled: true
+  tools:
+    - name: calculate_risk_score
+      type: inline_function
+    - name: schedule_screening
+      type: inline_function
+    - name: generate_care_plan
+      type: inline_function
+    - name: get_educational_content
+      type: inline_function
+    - name: send_reminder
+      type: inline_function
+
+observability:
+  enabled: true
+  tracing: true
+  metrics: true
+  export_to: cloudwatch
+
+policy:
+  guardrails:
+    - type: content_filter
+      description: "No medical diagnoses or treatment prescriptions"
+    - type: pii_detection
+      description: "Detect and protect patient PII"
+
+model:
+  provider: bedrock
+  model_id: "us.anthropic.claude-sonnet-4-6"
+  region: "us-east-1"
+  temperature: 0.3

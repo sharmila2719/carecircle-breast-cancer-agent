@@ -848,6 +848,10 @@ def show_about():
     ---
 
     *Built for the [Agents for Humans Hackathon 2026](https://agentsforhumans.devpost.com/) • MIT License*
+
+    ---
+
+    **Invented by Sharmila Begum** — Agentic AI Specialist | Ex Edgematican
     """)
 
 

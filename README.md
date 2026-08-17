@@ -60,6 +60,8 @@ CareCircle uses the **Strands Agents** framework with **AWS Bedrock** (Claude) a
 
 ## 🏗️ Architecture
 
+![CareCircle AWS Architecture](docs/images/carecircle_aws_architecture.png)
+
 ```
 ┌─────────────────────────────────────────────────────────┐
 │                    CareCircle Platform                     │

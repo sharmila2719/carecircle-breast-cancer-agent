@@ -1,0 +1,183 @@
+<mxfile host="app.diagrams.net" modified="2026-08-12T10:00:00.000Z" agent="5.0" version="21.0.0">
+  <diagram id="carecircle-aws-arch" name="CareCircle AWS Architecture">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Title -->
+        <mxCell id="title" value="CareCircle - Breast Cancer Screening &amp; Care Coordination Agent&#xa;AWS Serverless Architecture" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=18;fontStyle=1;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="450" y="20" width="700" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Users Group -->
+        <mxCell id="users-group" value="Users" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=1;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_aws_cloud_alt;stroke=#232F3E;fillColor=none;verticalAlign=top;align=center;spacingTop=7;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="100" width="300" height="200" as="geometry" />
+        </mxCell>
+
+        <!-- Patient User -->
+        <mxCell id="patient" value="Patient&#xa;(Web Browser)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.user;" vertex="1" parent="1">
+          <mxGeometry x="90" y="160" width="50" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Provider User -->
+        <mxCell id="provider" value="Healthcare&#xa;Provider" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.user;" vertex="1" parent="1">
+          <mxGeometry x="200" y="160" width="50" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Mobile User -->
+        <mxCell id="mobile" value="Mobile&#xa;User" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#FF8C00;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.mobile_client;" vertex="1" parent="1">
+          <mxGeometry x="290" y="160" width="40" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- AWS Cloud Group -->
+        <mxCell id="aws-cloud" value="AWS Cloud" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=1;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_aws_cloud;stroke=#232F3E;fillColor=none;verticalAlign=top;align=center;spacingTop=7;" vertex="1" parent="1">
+          <mxGeometry x="420" y="90" width="1130" height="780" as="geometry" />
+        </mxCell>
+
+        <!-- Streamlit Cloud -->
+        <mxCell id="streamlit" value="Streamlit Cloud&#xa;(Dashboard UI)&#xa;&#xa;• Risk Assessment Form&#xa;• Charts &amp; Visualizations&#xa;• Education Center&#xa;• AI Chat Interface" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E6D0DE;strokeColor=#AE4132;fontStyle=0;fontSize=11;verticalAlign=top;spacingTop=5;" vertex="1" parent="1">
+          <mxGeometry x="50" y="380" width="200" height="160" as="geometry" />
+        </mxCell>
+
+        <!-- API Gateway -->
+        <mxCell id="apigw" value="Amazon API Gateway&#xa;(HTTP API)" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#E7157B;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.api_gateway;" vertex="1" parent="1">
+          <mxGeometry x="500" y="160" width="60" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Lambda Function -->
+        <mxCell id="lambda" value="AWS Lambda&#xa;(carecircle-api)&#xa;Python 3.10 | 512MB" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#ED7100;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.lambda;" vertex="1" parent="1">
+          <mxGeometry x="500" y="340" width="60" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Strands Agent Box -->
+        <mxCell id="strands-box" value="Strands Agent (Orchestrator)&#xa;&#xa;• System Prompt (Medical Guidelines)&#xa;• Tool Selection &amp; Execution&#xa;• Multi-turn Conversation&#xa;• Safety Guardrails" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEFD5;strokeColor=#FF8C00;fontStyle=1;fontSize=11;verticalAlign=top;spacingTop=5;" vertex="1" parent="1">
+          <mxGeometry x="640" y="300" width="280" height="140" as="geometry" />
+        </mxCell>
+
+        <!-- Amazon Bedrock -->
+        <mxCell id="bedrock" value="Amazon Bedrock&#xa;Claude Sonnet 4.6&#xa;(Anthropic)" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#01A88D;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.sagemaker;" vertex="1" parent="1">
+          <mxGeometry x="750" y="150" width="60" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Tools Group -->
+        <mxCell id="tools-group" value="Custom @tool Functions (Strands SDK)" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=11;fontStyle=1;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_security_group;stroke=#147EBA;fillColor=none;verticalAlign=top;align=center;spacingTop=7;" vertex="1" parent="1">
+          <mxGeometry x="460" y="510" width="540" height="200" as="geometry" />
+        </mxCell>
+
+        <!-- Tool 1: Risk Assessment -->
+        <mxCell id="tool-risk" value="Risk&#xa;Assessment&#xa;(Gail Model)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="480" y="560" width="100" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Tool 2: Screening Scheduler -->
+        <mxCell id="tool-sched" value="Screening&#xa;Scheduler&#xa;(Appointments)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="590" y="560" width="100" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Tool 3: Care Plan -->
+        <mxCell id="tool-plan" value="Care Plan&#xa;Generator&#xa;(Personalized)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="700" y="560" width="100" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Tool 4: Education -->
+        <mxCell id="tool-edu" value="Patient&#xa;Education&#xa;(10 Topics)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="810" y="560" width="100" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Tool 5: Notifications -->
+        <mxCell id="tool-notify" value="Notification&#xa;Manager&#xa;(Reminders)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="920" y="560" width="100" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- AgentCore Group -->
+        <mxCell id="agentcore-group" value="Amazon Bedrock AgentCore Primitives" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=11;fontStyle=1;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_vpc;stroke=#01A88D;fillColor=none;verticalAlign=top;align=center;spacingTop=7;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="280" width="460" height="200" as="geometry" />
+        </mxCell>
+
+        <!-- Memory -->
+        <mxCell id="memory" value="Memory&#xa;(Session State)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="340" width="100" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Identity -->
+        <mxCell id="identity" value="Identity&#xa;(OAuth2/HIPAA)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1190" y="340" width="100" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Observability -->
+        <mxCell id="observability" value="Observability&#xa;(OpenTelemetry)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1300" y="340" width="100" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Policy -->
+        <mxCell id="policy" value="Policy&#xa;(Guardrails)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1410" y="340" width="100" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- S3 -->
+        <mxCell id="s3" value="Amazon S3&#xa;(Deploy Artifacts)" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#3F8624;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.s3;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="560" width="50" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- CloudWatch -->
+        <mxCell id="cloudwatch" value="Amazon&#xa;CloudWatch&#xa;(Logs &amp; Metrics)" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#E7157B;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.cloudwatch;" vertex="1" parent="1">
+          <mxGeometry x="1230" y="560" width="50" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- IAM -->
+        <mxCell id="iam" value="AWS IAM&#xa;(Permissions)" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#DD344C;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.identity_and_access_management;" vertex="1" parent="1">
+          <mxGeometry x="1360" y="560" width="50" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- SAM/CloudFormation -->
+        <mxCell id="sam" value="AWS SAM&#xa;CloudFormation&#xa;(IaC)" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#E7157B;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.cloudformation;" vertex="1" parent="1">
+          <mxGeometry x="1460" y="560" width="50" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- CONNECTIONS -->
+
+        <!-- Users to API Gateway -->
+        <mxCell id="conn1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#232F3E;strokeWidth=2;" edge="1" parent="1" source="patient" target="apigw">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Users to Streamlit -->
+        <mxCell id="conn1b" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;strokeColor=#AE4132;strokeWidth=2;dashed=1;" edge="1" parent="1" source="provider" target="streamlit">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- API Gateway to Lambda -->
+        <mxCell id="conn2" value="HTTPS" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeColor=#E7157B;strokeWidth=2;fontStyle=1;fontSize=10;" edge="1" parent="1" source="apigw" target="lambda">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Lambda to Strands Agent -->
+        <mxCell id="conn3" value="Mangum" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#ED7100;strokeWidth=2;fontSize=10;" edge="1" parent="1" source="lambda" target="strands-box">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Strands Agent to Bedrock -->
+        <mxCell id="conn4" value="ConverseStream API" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=0.5;exitY=0;entryX=0.5;entryY=1;strokeColor=#01A88D;strokeWidth=2;fontSize=10;" edge="1" parent="1" source="strands-box" target="bedrock">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Strands Agent to Tools -->
+        <mxCell id="conn5" value="Tool Calls" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeColor=#82B366;strokeWidth=2;fontSize=10;" edge="1" parent="1" source="strands-box" target="tools-group">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Strands Agent to AgentCore -->
+        <mxCell id="conn6" value="Primitives" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#6C8EBF;strokeWidth=2;fontSize=10;" edge="1" parent="1" source="strands-box" target="agentcore-group">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Inventor Credit -->
+        <mxCell id="credit" value="Invented by Sharmila Begum — Agentic AI Specialist | Ex Edgematican&#xa;Powered by Amazon Bedrock + Strands Agents SDK" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=12;fontStyle=2;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="480" y="760" width="500" height="50" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

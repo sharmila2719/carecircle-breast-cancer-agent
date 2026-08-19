@@ -4,7 +4,12 @@ Provides evidence-based educational content about breast cancer screening and pr
 """
 
 from typing import Any
-from strands import tool
+
+try:
+    from strands import tool
+except ImportError:
+    def tool(func):
+        return func
 
 
 @tool

@@ -6,7 +6,12 @@ Creates personalized care plans based on risk assessment and patient profile.
 import json
 from datetime import datetime, timedelta
 from typing import Any
-from strands import tool
+
+try:
+    from strands import tool
+except ImportError:
+    def tool(func):
+        return func
 
 
 # In-memory store for demo

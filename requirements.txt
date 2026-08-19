@@ -1,45 +1,13 @@
-# Core Agent Framework
-strands-agents>=0.1.0
-strands-agents-tools>=0.1.0
-
-# AWS
-boto3>=1.34.0
-botocore>=1.34.0
-
-# Web Framework
-fastapi>=0.104.0
-uvicorn>=0.24.0
-pydantic>=2.5.0
-pydantic-settings>=2.0.0
-
-# Configuration
-python-dotenv>=1.0.0
-jinja2>=3.1.2
-
-# HTTP Client
-httpx>=0.25.0
-
-# Database
-sqlalchemy>=2.0.0
-alembic>=1.13.0
-aiosqlite>=0.19.0
-
-# Utilities
-python-dateutil>=2.8.2
-apscheduler>=3.10.0
-
-# Dashboard UI
+# Streamlit Cloud deployment (lightweight)
 streamlit>=1.29.0
 plotly>=5.18.0
 pandas>=2.1.0
+python-dateutil>=2.8.2
+httpx>=0.25.0
+pydantic>=2.5.0
 
-# Strands Agent Dependencies (explicit for Windows compatibility)
-opentelemetry-api>=1.12.0
-opentelemetry-sdk>=0.40.0
-opentelemetry-semantic-conventions>=0.40.0
-opentelemetry-instrumentation>=0.40.0
-opentelemetry-instrumentation-threading>=0.40.0
-docstring-parser>=0.15.0
-jsonschema>=4.20.0
-watchdog>=3.0.0
-pyyaml>=6.0.0
+# Optional: Full agent (comment out for Streamlit Cloud if install fails)
+# strands-agents>=0.1.0
+# strands-agents-tools>=0.1.0
+# boto3>=1.34.0
+# botocore>=1.34.0

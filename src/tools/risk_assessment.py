@@ -6,7 +6,13 @@ Uses evidence-based factors to calculate personalized risk scores.
 
 import json
 from typing import Any
-from strands import tool
+
+try:
+    from strands import tool
+except ImportError:
+    # Fallback: make @tool a no-op decorator when strands is not installed
+    def tool(func):
+        return func
 
 
 @tool

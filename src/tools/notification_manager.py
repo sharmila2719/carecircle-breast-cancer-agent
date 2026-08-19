@@ -6,7 +6,12 @@ Handles patient communications including reminders, alerts, and educational mess
 import json
 from datetime import datetime
 from typing import Any
-from strands import tool
+
+try:
+    from strands import tool
+except ImportError:
+    def tool(func):
+        return func
 
 
 # In-memory notification store for demo

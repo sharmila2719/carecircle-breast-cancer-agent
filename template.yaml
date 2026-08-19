@@ -20,7 +20,7 @@ Resources:
     Properties:
       FunctionName: carecircle-api
       Description: CareCircle Breast Cancer Screening Agent API
-      Handler: handler.handler
+      Handler: dashboard_handler.handler
       CodeUri: lambda_app/
       Architectures:
         - x86_64

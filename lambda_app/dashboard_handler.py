@@ -136,6 +136,8 @@ DASHBOARD_HTML = """<!DOCTYPE html>
     <div class="nav">
         <a href="#" onclick="showTab('dashboard')" class="active" id="nav-dashboard">🏠 Dashboard</a>
         <a href="#" onclick="showTab('risk')" id="nav-risk">📊 Risk Assessment</a>
+        <a href="#" onclick="showTab('scheduler')" id="nav-scheduler">📅 Screening Scheduler</a>
+        <a href="#" onclick="showTab('careplan')" id="nav-careplan">📋 Care Plan</a>
         <a href="#" onclick="showTab('education')" id="nav-education">📚 Education</a>
         <a href="#" onclick="showTab('chat')" id="nav-chat">💬 Chat</a>
         <a href="#" onclick="showTab('about')" id="nav-about">ℹ️ About</a>
@@ -192,6 +194,62 @@ DASHBOARD_HTML = """<!DOCTYPE html>
                     <button type="submit" class="btn">🔬 Calculate Risk Score</button>
                 </form>
                 <div id="risk-result" class="result-box" style="display:none;"></div>
+            </div>
+        </div>
+
+        <!-- SCREENING SCHEDULER TAB -->
+        <div id="tab-scheduler" class="tab-content">
+            <div class="section">
+                <h2>📅 Screening Scheduler</h2>
+                <p style="margin-bottom:20px;">Schedule breast cancer screening appointments with preparation instructions.</p>
+                <form id="schedule-form" onsubmit="scheduleScreening(event)">
+                    <div class="form-grid">
+                        <div class="form-group"><label>Patient ID</label><input type="number" id="sched-patient" value="1" min="1"></div>
+                        <div class="form-group"><label>Screening Type</label><select id="sched-type"><option value="mammogram">Mammogram</option><option value="3d_mammogram">3D Mammogram</option><option value="mri">Breast MRI</option><option value="ultrasound">Ultrasound</option><option value="clinical_exam">Clinical Exam</option></select></div>
+                        <div class="form-group"><label>Preferred Date</label><input type="date" id="sched-date"></div>
+                        <div class="form-group"><label>Facility</label><input type="text" id="sched-facility" value="Community Breast Health Center"></div>
+                        <div class="form-group"><label>Provider</label><input type="text" id="sched-provider" placeholder="Dr. Name (optional)"></div>
+                        <div class="form-group"><label>Notes</label><input type="text" id="sched-notes" placeholder="Additional notes (optional)"></div>
+                    </div>
+                    <button type="submit" class="btn">📅 Schedule Screening</button>
+                </form>
+                <div id="schedule-result" class="result-box" style="display:none;"></div>
+            </div>
+            <div class="section">
+                <h2>📋 Preparation Instructions by Type</h2>
+                <div class="education-grid">
+                    <div class="edu-card"><h4>📷 Mammogram</h4><p>• No deodorant/powder<br>• Wear two-piece outfit<br>• Schedule after period<br>• Duration: 15-30 min</p></div>
+                    <div class="edu-card"><h4>🧲 Breast MRI</h4><p>• Report metal implants<br>• May need to fast 4hrs<br>• Remove all jewelry<br>• Duration: 30-60 min</p></div>
+                    <div class="edu-card"><h4>🔊 Ultrasound</h4><p>• No special prep needed<br>• Wear two-piece outfit<br>• No lotions on breast<br>• Duration: 15-30 min</p></div>
+                    <div class="edu-card"><h4>🩺 Clinical Exam</h4><p>• No special prep<br>• Note any changes<br>• Bring medication list<br>• Duration: 10-15 min</p></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARE PLAN TAB -->
+        <div id="tab-careplan" class="tab-content">
+            <div class="section">
+                <h2>📋 Personalized Care Plan Generator</h2>
+                <p style="margin-bottom:20px;">Generate a care plan based on risk assessment results. Complete a risk assessment first, then generate your plan.</p>
+                <form id="careplan-form" onsubmit="generateCarePlan(event)">
+                    <div class="form-grid">
+                        <div class="form-group"><label>Patient ID</label><input type="number" id="cp-patient" value="1" min="1"></div>
+                        <div class="form-group"><label>Risk Category</label><select id="cp-risk"><option value="low">Low</option><option value="moderate">Moderate</option><option value="high" selected>High</option><option value="very_high">Very High</option></select></div>
+                        <div class="form-group"><label>Age</label><input type="number" id="cp-age" value="52" min="18" max="120"></div>
+                        <div class="form-group"><label>Risk Score</label><input type="number" id="cp-score" value="43.5" step="0.1" min="0" max="100"></div>
+                    </div>
+                    <button type="submit" class="btn">🎯 Generate Care Plan</button>
+                </form>
+                <div id="careplan-result" class="result-box" style="display:none;"></div>
+            </div>
+            <div class="section">
+                <h2>📌 What a Care Plan Includes</h2>
+                <div class="education-grid">
+                    <div class="edu-card"><h4>🩺 Screening Schedule</h4><p>Personalized timing for mammograms, MRI, clinical exams based on your risk level</p></div>
+                    <div class="edu-card"><h4>🥗 Lifestyle Recommendations</h4><p>Exercise, nutrition, alcohol limits, weight management tailored to you</p></div>
+                    <div class="edu-card"><h4>✅ Action Items</h4><p>Tasks with due dates and priorities — never miss a step</p></div>
+                    <div class="edu-card"><h4>🧬 Genetic Counseling</h4><p>Recommended if family history or elevated risk detected</p></div>
+                </div>
             </div>
         </div>
 
@@ -335,6 +393,79 @@ DASHBOARD_HTML = """<!DOCTYPE html>
             }
             messages.scrollTop = messages.scrollHeight;
         }
+
+        async function scheduleScreening(e) {
+            e.preventDefault();
+            // Set default date to 2 weeks from now if not set
+            let dateVal = document.getElementById('sched-date').value;
+            if (!dateVal) {
+                const d = new Date(); d.setDate(d.getDate() + 14);
+                dateVal = d.toISOString().split('T')[0];
+            }
+            const data = {
+                patient_id: parseInt(document.getElementById('sched-patient').value),
+                screening_type: document.getElementById('sched-type').value,
+                preferred_date: dateVal,
+                facility: document.getElementById('sched-facility').value,
+                provider: document.getElementById('sched-provider').value,
+                notes: document.getElementById('sched-notes').value
+            };
+            try {
+                const resp = await fetch(API_BASE + '/api/screening/schedule', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)});
+                const result = await resp.json();
+                if (result.success) {
+                    const prep = result.preparation || {};
+                    document.getElementById('schedule-result').innerHTML = `
+                        <h3 style="color:#28a745;">✅ Screening Scheduled Successfully!</h3>
+                        <p style="margin:10px 0;"><strong>Type:</strong> ${data.screening_type.replace('_',' ')} | <strong>Date:</strong> ${data.preferred_date} | <strong>Facility:</strong> ${data.facility}</p>
+                        <h4 style="margin-top:15px;">📋 Preparation Instructions:</h4>
+                        <p><strong>${prep.title || 'Preparation'}</strong> (Duration: ${prep.duration || 'N/A'})</p>
+                        <ul style="padding-left:20px;margin-top:8px;">${(prep.instructions||[]).map(i => '<li>'+i+'</li>').join('')}</ul>
+                        <p style="margin-top:10px;background:#d4edda;padding:10px;border-radius:8px;">🔔 Reminders will be sent 7 days and 1 day before your appointment.</p>`;
+                } else {
+                    document.getElementById('schedule-result').innerHTML = `<h3 style="color:#dc3545;">❌ ${result.error || 'Scheduling failed'}</h3>`;
+                }
+                document.getElementById('schedule-result').style.display = 'block';
+            } catch(err) { alert('Error: ' + err.message); }
+        }
+
+        async function generateCarePlan(e) {
+            e.preventDefault();
+            const data = {
+                patient_id: parseInt(document.getElementById('cp-patient').value),
+                risk_category: document.getElementById('cp-risk').value,
+                age: parseInt(document.getElementById('cp-age').value),
+                risk_score: parseFloat(document.getElementById('cp-score').value),
+                risk_factors: '[]'
+            };
+            try {
+                const resp = await fetch(API_BASE + '/api/care-plan/generate', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)});
+                const result = await resp.json();
+                if (result.success) {
+                    const plan = result.care_plan;
+                    let schedHtml = Object.entries(plan.screening_plan || {}).map(([k,v]) => `<li><strong>${k.replace('_',' ')}:</strong> ${v.frequency} (Next: ${v.next_due})</li>`).join('');
+                    let tasksHtml = (plan.tasks || []).map(t => `<li>[${t.priority.toUpperCase()}] ${t.title} — Due: ${t.due}</li>`).join('');
+                    let lifestyleHtml = (plan.lifestyle || []).map(l => `<li>${l}</li>`).join('');
+                    document.getElementById('careplan-result').innerHTML = `
+                        <h3 style="color:#E91E8C;">📋 ${plan.title}</h3>
+                        <p style="margin:10px 0;">Risk Score: <strong>${plan.risk_score}</strong> | Category: <strong>${plan.risk_category.replace('_',' ').toUpperCase()}</strong></p>
+                        ${plan.genetic_counseling_recommended ? '<p style="background:#fff3cd;padding:10px;border-radius:8px;">🧬 <strong>Genetic Counseling Recommended</strong></p>' : ''}
+                        <h4 style="margin-top:15px;">🩺 Screening Schedule:</h4><ul style="padding-left:20px;">${schedHtml}</ul>
+                        <h4 style="margin-top:15px;">✅ Action Items:</h4><ul style="padding-left:20px;">${tasksHtml}</ul>
+                        <h4 style="margin-top:15px;">🥗 Lifestyle Recommendations:</h4><ul style="padding-left:20px;">${lifestyleHtml}</ul>`;
+                } else {
+                    document.getElementById('careplan-result').innerHTML = `<h3 style="color:#dc3545;">❌ Failed to generate care plan</h3>`;
+                }
+                document.getElementById('careplan-result').style.display = 'block';
+            } catch(err) { alert('Error: ' + err.message); }
+        }
+
+        // Set default date for scheduler
+        document.addEventListener('DOMContentLoaded', function() {
+            const d = new Date(); d.setDate(d.getDate() + 14);
+            const el = document.getElementById('sched-date');
+            if (el) el.value = d.toISOString().split('T')[0];
+        });
     </script>
 </body>
 </html>"""
@@ -392,13 +523,111 @@ async def chat(req: ChatRequest):
     elif any(w in msg for w in ["risk", "assess"]):
         resp = "I can assess your risk! Use the Risk Assessment tab or tell me your age and health details."
     elif any(w in msg for w in ["schedule", "mammogram", "screening"]):
-        resp = "For scheduling: mammograms are recommended annually from age 40 (average risk) or earlier for high-risk. Use our API: POST /api/screening/schedule"
+        resp = "For scheduling: mammograms are recommended annually from age 40 (average risk) or earlier for high-risk. Use the Screening Scheduler tab to book."
     elif any(w in msg for w in ["prevent", "lifestyle", "reduce"]):
         resp = "Prevention tips: Exercise 150+ min/week, maintain healthy BMI, limit alcohol to ≤1 drink/day, quit smoking, eat Mediterranean diet. These can reduce risk 10-30%."
     elif any(w in msg for w in ["genetic", "brca"]):
         resp = "BRCA1/BRCA2 carriers have 45-72% lifetime risk. Testing is a simple blood/saliva sample. Genetic counseling is recommended before and after testing."
+    elif any(w in msg for w in ["care plan", "plan"]):
+        resp = "I can generate a personalized care plan! Go to the Care Plan tab, select your risk category, and click Generate. Your plan will include screening schedule, lifestyle recommendations, and action items."
+    elif any(w in msg for w in ["dense", "density"]):
+        resp = "About 40-50% of women have dense breasts. Dense tissue appears white on mammograms (like tumors), making detection harder. 3D mammography and MRI are more effective for dense breasts."
+    elif any(w in msg for w in ["hello", "hi", "help"]):
+        resp = "Hello! I'm CareCircle 🩺 I can help with: risk assessment, screening scheduling, care plans, and education. Try the tabs above or ask me anything about breast health!"
     else:
-        resp = "Hello! I'm CareCircle. I help with: risk assessment, screening scheduling, care plans, and education. Try asking about symptoms, risk factors, or screening guidelines."
+        resp = "I'm CareCircle, your breast cancer screening assistant. I help with: risk assessment, screening scheduling, care plans, and education. Try asking about symptoms, risk, screening, or prevention!"
     return {"success": True, "response": resp}
+
+
+class ScheduleRequest(BaseModel):
+    patient_id: int = 1
+    screening_type: str = "mammogram"
+    preferred_date: str = ""
+    facility: str = "Community Breast Health Center"
+    provider: str = ""
+    notes: str = ""
+
+class CarePlanRequest(BaseModel):
+    patient_id: int = 1
+    risk_category: str = "high"
+    age: int = 52
+    risk_score: float = 43.5
+    risk_factors: str = "[]"
+
+
+@app.post("/api/screening/schedule")
+async def schedule_screening(req: ScheduleRequest):
+    from datetime import datetime, timedelta
+    valid_types = ["mammogram", "3d_mammogram", "mri", "ultrasound", "clinical_exam", "biopsy"]
+    if req.screening_type.lower() not in valid_types:
+        return {"success": False, "error": f"Invalid type. Must be: {', '.join(valid_types)}"}
+    if not req.preferred_date:
+        return {"success": False, "error": "Date is required (YYYY-MM-DD)"}
+
+    prep_data = {
+        "mammogram": {"title": "Mammogram Preparation", "instructions": ["No deodorant or powder on exam day", "Wear a two-piece outfit", "Schedule 1-2 weeks after period", "Bring prior mammogram images if available"], "duration": "15-30 minutes"},
+        "3d_mammogram": {"title": "3D Mammogram Preparation", "instructions": ["Same as standard mammogram prep", "No deodorant or body products", "Slightly longer than standard mammogram"], "duration": "20-40 minutes"},
+        "mri": {"title": "Breast MRI Preparation", "instructions": ["Inform staff of metal implants or pacemaker", "May need to fast 4 hours before", "Remove all metal objects and jewelry", "Wear comfortable clothing"], "duration": "30-60 minutes"},
+        "ultrasound": {"title": "Ultrasound Preparation", "instructions": ["No special preparation required", "Wear a two-piece outfit", "Do not apply lotions to breast area"], "duration": "15-30 minutes"},
+        "clinical_exam": {"title": "Clinical Exam Preparation", "instructions": ["No special prep needed", "Note any breast changes to discuss", "Bring medication list"], "duration": "10-15 minutes"},
+        "biopsy": {"title": "Biopsy Preparation", "instructions": ["Discuss medications with doctor", "Arrange someone to drive you home", "Wear comfortable supportive bra", "Eat a light meal before"], "duration": "30-60 minutes"},
+    }
+
+    return {
+        "success": True,
+        "message": f"Screening scheduled for {req.preferred_date} at {req.facility}",
+        "appointment": {"patient_id": req.patient_id, "type": req.screening_type, "date": req.preferred_date, "facility": req.facility, "provider": req.provider, "status": "scheduled"},
+        "preparation": prep_data.get(req.screening_type.lower(), prep_data["mammogram"])
+    }
+
+
+@app.post("/api/care-plan/generate")
+async def generate_care_plan(req: CarePlanRequest):
+    from datetime import datetime, timedelta
+    today = datetime.now()
+
+    screening_plan = {}
+    if req.risk_category in ["very_high", "high"]:
+        screening_plan = {
+            "mammogram": {"frequency": "Annual", "next_due": (today + timedelta(days=180)).strftime("%Y-%m-%d")},
+            "mri": {"frequency": "Annual (supplemental)", "next_due": (today + timedelta(days=90)).strftime("%Y-%m-%d")},
+            "clinical_exam": {"frequency": "Every 6 months", "next_due": (today + timedelta(days=60)).strftime("%Y-%m-%d")},
+        }
+    else:
+        screening_plan = {
+            "mammogram": {"frequency": "Annual" if req.age >= 40 else "Discuss at 40", "next_due": (today + timedelta(days=365)).strftime("%Y-%m-%d")},
+            "clinical_exam": {"frequency": "Annual", "next_due": (today + timedelta(days=365)).strftime("%Y-%m-%d")},
+        }
+
+    tasks = [
+        {"title": "Review care plan with provider", "due": (today + timedelta(days=14)).strftime("%Y-%m-%d"), "priority": "high"},
+        {"title": "Schedule next screening", "due": (today + timedelta(days=30)).strftime("%Y-%m-%d"), "priority": "high"},
+        {"title": "Complete self-exam education", "due": (today + timedelta(days=7)).strftime("%Y-%m-%d"), "priority": "medium"},
+        {"title": "Start exercise routine (150 min/week)", "due": (today + timedelta(days=14)).strftime("%Y-%m-%d"), "priority": "medium"},
+    ]
+    if req.risk_category in ["high", "very_high"]:
+        tasks.append({"title": "Genetic counseling consultation", "due": (today + timedelta(days=21)).strftime("%Y-%m-%d"), "priority": "high"})
+
+    return {
+        "success": True,
+        "care_plan": {
+            "patient_id": req.patient_id,
+            "title": f"Breast Health Care Plan - {req.risk_category.replace('_', ' ').title()} Risk",
+            "risk_score": req.risk_score,
+            "risk_category": req.risk_category,
+            "screening_plan": screening_plan,
+            "tasks": tasks,
+            "lifestyle": [
+                "Exercise 150+ minutes per week (reduces risk 10-20%)",
+                "Maintain healthy BMI (18.5-24.9)",
+                "Limit alcohol to ≤1 drink per day",
+                "Eat Mediterranean-style diet (fruits, vegetables, whole grains)",
+                "Practice monthly breast self-awareness",
+                "Get 7-9 hours quality sleep per night",
+            ],
+            "genetic_counseling_recommended": req.risk_category in ["high", "very_high"],
+            "created_at": today.isoformat(),
+        }
+    }
 
 handler = Mangum(app, lifespan="off")

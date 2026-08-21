@@ -323,7 +323,7 @@ DASHBOARD_HTML = """<!DOCTYPE html>
     </div>
 
     <script>
-        const API_BASE = window.location.origin;
+        const API_BASE = '';
 
         function showTab(tab) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
@@ -384,12 +384,20 @@ DASHBOARD_HTML = """<!DOCTYPE html>
             const messages = document.getElementById('chat-messages');
             messages.innerHTML += `<div class="chat-msg user">${msg}</div>`;
             input.value = '';
+            messages.innerHTML += `<div class="chat-msg bot" id="typing">Thinking...</div>`;
+            messages.scrollTop = messages.scrollHeight;
             try {
-                const resp = await fetch(API_BASE + '/api/chat', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({message: msg})});
+                const resp = await fetch(API_BASE + '/api/chat', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({message: msg})
+                });
                 const data = await resp.json();
+                document.getElementById('typing').remove();
                 messages.innerHTML += `<div class="chat-msg bot">${data.response}</div>`;
             } catch(err) {
-                messages.innerHTML += `<div class="chat-msg bot">Sorry, I encountered an error. Please try again.</div>`;
+                document.getElementById('typing').remove();
+                messages.innerHTML += `<div class="chat-msg bot">I encountered a connection error. The API may be warming up — please try again in a moment. (${err.message})</div>`;
             }
             messages.scrollTop = messages.scrollHeight;
         }
@@ -518,24 +526,34 @@ async def risk_assessment(req: RiskRequest):
 @app.post("/api/chat")
 async def chat(req: ChatRequest):
     msg = req.message.lower()
-    if any(w in msg for w in ["symptom", "sign", "lump"]):
-        resp = "Common signs include: new lumps, skin dimpling, nipple changes/discharge, swelling, redness. 80% of lumps are NOT cancerous. Always see your doctor for evaluation."
-    elif any(w in msg for w in ["risk", "assess"]):
-        resp = "I can assess your risk! Use the Risk Assessment tab or tell me your age and health details."
-    elif any(w in msg for w in ["schedule", "mammogram", "screening"]):
-        resp = "For scheduling: mammograms are recommended annually from age 40 (average risk) or earlier for high-risk. Use the Screening Scheduler tab to book."
-    elif any(w in msg for w in ["prevent", "lifestyle", "reduce"]):
-        resp = "Prevention tips: Exercise 150+ min/week, maintain healthy BMI, limit alcohol to ≤1 drink/day, quit smoking, eat Mediterranean diet. These can reduce risk 10-30%."
-    elif any(w in msg for w in ["genetic", "brca"]):
-        resp = "BRCA1/BRCA2 carriers have 45-72% lifetime risk. Testing is a simple blood/saliva sample. Genetic counseling is recommended before and after testing."
-    elif any(w in msg for w in ["care plan", "plan"]):
-        resp = "I can generate a personalized care plan! Go to the Care Plan tab, select your risk category, and click Generate. Your plan will include screening schedule, lifestyle recommendations, and action items."
+    if any(w in msg for w in ["symptom", "sign", "lump", "change", "pain", "discharge"]):
+        resp = "Common breast cancer signs include: • New lump or mass • Skin dimpling (orange peel texture) • Nipple retraction or discharge • Swelling or redness • Breast or nipple pain. Important: 80% of lumps are NOT cancerous, but any new change should be evaluated by your doctor promptly."
+    elif any(w in msg for w in ["risk", "assess", "score", "chance", "likely"]):
+        resp = "I can assess your risk! Go to the 📊 Risk Assessment tab and enter your details. Key factors include: age, family history, genetic markers (BRCA1/BRCA2), breast density, previous biopsies, and lifestyle factors. The tool uses a Modified Gail Model with 12+ evidence-based factors."
+    elif any(w in msg for w in ["schedule", "book", "appointment"]):
+        resp = "Go to the 📅 Screening Scheduler tab to book an appointment! You can schedule mammograms, 3D mammograms, breast MRI, ultrasound, or clinical exams. You'll also get preparation instructions specific to your screening type."
+    elif any(w in msg for w in ["mammogram", "mri", "ultrasound", "screening", "test", "exam"]):
+        resp = "Screening options: • Mammogram (15-30 min, X-ray of breast) • 3D Mammogram (more detailed, better for dense breasts) • Breast MRI (30-60 min, recommended for high-risk) • Ultrasound (15-30 min, no radiation). Annual mammogram recommended from age 40 for average risk."
+    elif any(w in msg for w in ["prevent", "lifestyle", "reduce", "lower", "diet", "exercise", "food"]):
+        resp = "Lifestyle changes that reduce breast cancer risk: • Exercise 150+ min/week (reduces risk 10-20%) • Maintain healthy BMI (18.5-24.9) • Limit alcohol to ≤1 drink/day • Quit smoking • Eat Mediterranean diet (fruits, vegetables, whole grains, fish) • Get 7-9 hours quality sleep • Limit hormone replacement therapy."
+    elif any(w in msg for w in ["genetic", "brca", "hereditary", "inherit", "gene", "mutation"]):
+        resp = "About BRCA genetic testing: • BRCA1/BRCA2 carriers have 45-72% lifetime risk • Only 5-10% of breast cancers are hereditary • Testing is a simple blood or saliva sample • Recommended if: strong family history, early-onset in family, male breast cancer in family • Genetic counseling advised before and after testing."
     elif any(w in msg for w in ["dense", "density"]):
-        resp = "About 40-50% of women have dense breasts. Dense tissue appears white on mammograms (like tumors), making detection harder. 3D mammography and MRI are more effective for dense breasts."
-    elif any(w in msg for w in ["hello", "hi", "help"]):
-        resp = "Hello! I'm CareCircle 🩺 I can help with: risk assessment, screening scheduling, care plans, and education. Try the tabs above or ask me anything about breast health!"
+        resp = "Breast density: • About 40-50% of women have dense breasts • Dense tissue appears white on mammograms (same as tumors) — can mask cancer • Women with dense breasts benefit from supplemental screening (3D mammogram or MRI) • Density is determined by genetics, not breast size • Many states require density notification after mammogram."
+    elif any(w in msg for w in ["care plan", "plan", "recommendation", "what should"]):
+        resp = "Go to the 📋 Care Plan tab to generate a personalized plan! Based on your risk level, it includes: • Screening schedule (mammogram, MRI timing) • Lifestyle recommendations • Action items with due dates • Whether genetic counseling is recommended. Complete a Risk Assessment first for the best results."
+    elif any(w in msg for w in ["age", "when", "often", "frequency", "guideline", "start"]):
+        resp = "Screening guidelines by risk: • Average risk: Annual mammogram starting at age 40 (ACS) • High risk (>20% lifetime): Mammogram + MRI starting at age 30 • BRCA carriers: Annual mammogram + MRI from age 25-30 • All women: Monthly breast self-awareness + annual clinical exam."
+    elif any(w in msg for w in ["survival", "stage", "early", "late", "prognosis", "cure"]):
+        resp = "Breast cancer survival by stage: • Localized (early): 99% five-year survival • Regional (nearby spread): 86% survival • Distant (metastatic): 28% survival. This is why early detection through regular screening is critical — mammograms can find cancers up to 2 years before they can be felt."
+    elif any(w in msg for w in ["hello", "hi", "hey", "help", "start", "what can"]):
+        resp = "Hello! I'm CareCircle 🩺 Your breast cancer screening assistant. I can help with: • 📊 Risk Assessment — understand your personal risk level • 📅 Screening — schedule mammograms, MRIs • 📋 Care Plans — personalized health plans • 📚 Education — any breast health question. What would you like to know?"
+    elif any(w in msg for w in ["thank", "thanks", "bye", "goodbye"]):
+        resp = "You're welcome! Remember: early detection saves lives. Stay on top of your screenings, and don't hesitate to reach out to your healthcare provider with any concerns. Take care! 💗"
+    elif any(w in msg for w in ["who", "what is", "about"]):
+        resp = "CareCircle is an AI-powered breast cancer screening coordination agent. Built with AWS Bedrock (Claude) and Strands Agents SDK. It helps personalize screening plans, schedule appointments, generate care plans, and educate patients — all based on evidence-based guidelines (WHO, ACS, NCCN)."
     else:
-        resp = "I'm CareCircle, your breast cancer screening assistant. I help with: risk assessment, screening scheduling, care plans, and education. Try asking about symptoms, risk, screening, or prevention!"
+        resp = "Great question! While I may not have a specific answer for that, I can help with: • Breast cancer symptoms and signs • Risk assessment (tell me your age and details) • Screening guidelines and scheduling • Prevention and lifestyle tips • Genetic testing (BRCA) • Breast density info • Care plan generation. Try asking about any of these topics!"
     return {"success": True, "response": resp}
 
 

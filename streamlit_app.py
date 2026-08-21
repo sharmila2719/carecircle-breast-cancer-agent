@@ -683,21 +683,32 @@ def _generate_demo_response(prompt: str) -> str:
             "Would you like me to help with a **risk assessment** or **schedule a screening**?"
         )
     elif any(word in prompt_lower for word in ["risk", "assess", "score", "calculate", "my risk"]):
-        # Actually run the risk assessment if they mention their details
-        if any(word in prompt_lower for word in ["50", "55", "60", "45", "40"]):
+        # Actually run the risk assessment if they mention any age number or details
+        # Check if any number between 18-120 is in the message
+        has_age = False
+        age = 50
+        for word in prompt_lower.split():
+            cleaned = word.strip(".,!?;:'\"")
+            if cleaned.isdigit() and 18 <= int(cleaned) <= 120:
+                age = int(cleaned)
+                has_age = True
+                break
+        # Also trigger if they mention family/history/old/year
+        has_details = any(w in prompt_lower for w in ["family", "mother", "sister", "old", "year", "history", "dense", "brca", "biopsy", "smoke", "alcohol", "drink"])
+        if has_age or has_details:
             from src.tools.risk_assessment import calculate_risk_score
-            # Try to extract age
-            age = 50
-            for word in prompt_lower.split():
-                if word.isdigit() and 18 <= int(word) <= 120:
-                    age = int(word)
-                    break
-            family = any(w in prompt_lower for w in ["family", "mother", "sister", "daughter"])
+            family = any(w in prompt_lower for w in ["family", "mother", "sister", "daughter", "history", "background"])
             dense = "dense" in prompt_lower
+            brca = "brca" in prompt_lower
+            smoking = any(w in prompt_lower for w in ["smoke", "smoking"])
+            alcohol = "alcohol" in prompt_lower or "drink" in prompt_lower
             result = calculate_risk_score(
                 age=age,
                 family_history=family,
+                genetic_markers="BRCA1" if brca else "",
                 breast_density="dense" if dense else "scattered",
+                smoking_history=smoking,
+                alcohol_consumption="light" if alcohol else "none",
             )
             return (
                 f"## 📊 Your Risk Assessment Result\n\n"
